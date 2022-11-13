@@ -7,6 +7,8 @@
 ## Installation
 
 ```bash
+$ npm i -g npm-check-updates
+$ ncu -u
 $ npm install
 $ cp env-example .env
 ```
@@ -25,14 +27,14 @@ $ npm run start:prod
 
 # docker
 $ docker container kill $(docker container ls -q)
-$ docker composer up --build
+$ docker-compose up --build
 $ docker-compose exec api bash
 $ npm run migration:run
 $ npm run seed:run
-$ docker exec -it nestjs-boilerplate_postgres_1 bash
+$ docker exec -it nest-app_postgres_1 bash
 api-# psql -U root -W api
 api-# Password: secret
-$ docker exec -it nestjs-boilerplate_postgres_1 psql -U root -W api
+$ docker exec -it nest-app_postgres_1 psql -U root -W api
 api-# \dt
           List of relations
  Schema |    Name    | Type  | Owner 
