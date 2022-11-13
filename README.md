@@ -1,26 +1,4 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# RESTful API Nest Server 🇻🇳
 
 ## Description
 
@@ -30,6 +8,7 @@
 
 ```bash
 $ npm install
+$ cp env-example .env
 ```
 
 ## Running the app
@@ -43,7 +22,87 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+
+# docker
+$ docker container kill $(docker container ls -q)
+$ docker composer up --build
+$ docker-compose exec api bash
+$ npm run migration:run
+$ npm run seed:run
+$ docker exec -it nestjs-boilerplate_postgres_1 bash
+api-# psql -U root -W api
+api-# Password: secret
+$ docker exec -it nestjs-boilerplate_postgres_1 psql -U root -W api
+api-# \dt
+          List of relations
+ Schema |    Name    | Type  | Owner 
+--------+------------+-------+-------
+ public | file       | table | root
+ public | forgot     | table | root
+ public | migrations | table | root
+ public | role       | table | root
+ public | status     | table | root
+ public | user       | table | root
+(6 rows)
 ```
+
+## Project Structure
+
+```
+src\
+ |--\src\config\                                          # Environment variables and configuration related things
+ |--\src\...\...controller.ts                             # Route controllers (controller layer)
+ |--src\...\entites\                                      # Swagger files
+ |--(middlewares)\                                        # Custom nest middlewares
+ |--\src\models\users\                                    # Postgres models (data layer)
+ |--\src\...\...controller.ts(routes)\                    # Routes
+ |--\src\auth-database-files-forgot-mail-users(services)\ # Business logic (service layer)
+ |--\src\utils\                                           # Utility classes and functions
+ |--\src\utils\validators\                                # Request data validation schemas
+ |--\src\app.module.ts                                    # Nest app
+ |--\src\main.js                                          # App entry point
+```
+
+## API Documentation
+
+To view the list of available APIs and their specifications, run the server and go to `http://localhost:3000/docs` in your browser. This documentation page is automatically generated using the [swagger](https://swagger.io/) definitions written as comments in the route files.
+https://editor.swagger.io/ coppy from swagger.yaml
+MailDev using directory `/tmp/maildev-8`
+MailDev webapp running at `http://0.0.0.0:1080`
+MailDev SMTP Server running at `0.0.0.0:1025`
+Database Adminer `http://localhost:8080/`
+
+## API Endpoints
+
+List of available routes:
+
+**Auth routes**:\
+`POST /api/v1/auth/email/register` - register\
+`POST /api/v1/auth/admin/email/login` - login\
+`POST /api/v1/auth/email/logout` 
+`POST /api/v1/auth/email/refresh` - refresh auth tokens\
+`POST /api/v1/auth/forgot/password` - send reset password email\
+`POST /api/v1/auth/reset/password` - reset password\
+`POST /api/v1/auth/email/verification` - send verification email\
+`POST /api/v1/auth/email/confirm` - verify email
+`GET /api/v1/auth/me`
+`PATCH /api/v1/auth/me`
+`DELETE /api/v1/auth/me` - logout\
+`POST /api/v1/auth/facebook/login`
+`POST /api/v1/auth/google/login`
+`POST /api/v1/auth/twitter/login`
+`POST /api/v1/auth/apple/login`
+
+**User routes**:\
+`POST /api/v1/users` - create a user\
+`GET /api/v1/users` - get all users\
+`GET /api/v1/users/:id` - get user\
+`PATCH /api/v1/users/:id` - update user\
+`DELETE /api/v1/users/:id` - delete user
+
+**Files routes**:\
+`POST /api/v1/files/upload` - upload file\
+`GET /api/v1/users/:path` - get file\
 
 ## Test
 
@@ -56,6 +115,10 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
+
+# test in docker
+$ docker compose -f docker-compose.ci.yaml --env-file env-example -p ci up --build --exit-code-from api && docker compose -p ci rm -svf
+$ docker run --rm jordi/ab -n 100 -c 100 -T application/json -H "Authorization: Bearer USER_TOKEN" -v 2 http://<server_ip>:3000/api/v1/users
 ```
 
 ## Support
